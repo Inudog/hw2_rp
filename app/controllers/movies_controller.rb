@@ -37,7 +37,7 @@ class MoviesController < ApplicationController
        end
     end
     if @filter==nil
-      @filter=[]
+      @filter={}
     end
     #@all_ratings=['G', 'PG']
      @all_ratings = Movie.getRatings
