@@ -11,12 +11,33 @@ class MoviesController < ApplicationController
     if params[:sorting]
       session[:sorting]=params[:sorting]
     end
-    @sort=session[:sorting]
-    if @sort!=nil
-      @movies = Movie.order(@sort).all
-    else 
-       @movies = Movie.all
+    
+    if params[:ratings]
+      session[:ratings]=params[:ratings]
     end
+    
+    if (params[:sorting]==nil && session[:sorting]!=nil) || (params[:ratings]==nil && session[:ratings]!=nil)
+      params[:sorting]=session[:sorting]
+      params[:ratings]=session[:ratings]
+     redirect_to movies_path(params) 
+    
+    end
+    
+    @filter = session[:ratings]
+    @sort=session[:sorting]
+    if @sort!=nil && @filter!=nil
+      @movies = Movie.where(:rating=>@filter.keys).order(@sort).all
+    else if @sort!=nil
+      @movies = Movie.order(@sort).all
+      else if @filter!=nil
+        @movies = Movie.where(:rating=>@filter.keys).all
+      else
+       @movies = Movie.all
+       end
+       end
+    end
+    #@all_ratings=['G', 'PG']
+     @all_ratings = Movie.getRatings
      
      # @movies = Movie.all
   end
